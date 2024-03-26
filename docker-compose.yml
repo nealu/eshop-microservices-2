@@ -1,0 +1,105 @@
+version: '3.4'
+
+services:
+  catalogdb:
+    image: mongo
+    
+  basketdb:
+    image: redis:alpine
+
+  discountdb:
+    image: postgres
+
+  pgadmin:
+    image: dpage/pgadmin4
+
+  orderdb:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+
+  catalog.api:
+    image: ${DOCKER_REGISTRY-}catalogapi
+    build:
+      context: .
+      dockerfile: Services/Catalog/Catalog.API/Dockerfile
+
+  basket.api:
+    image: ${DOCKER_REGISTRY-}basketapi
+    build:
+      context: .
+      dockerfile: Services/Basket/Basket.API/Dockerfile
+
+  discount.api:
+    image: ${DOCKER_REGISTRY-}discountapi
+    build:
+      context: .
+      dockerfile: Services/Discount/Discount.API/Dockerfile
+
+  ordering.api:
+    image: ${DOCKER_REGISTRY-}orderingapi
+    build:
+      context: .
+      dockerfile: Services/Ordering/Ordering.API/Dockerfile
+
+  web.shopping.httpaggregator:
+    image: ${DOCKER_REGISTRY-}webshoppinghttpaggregator
+    build:
+      context: .
+      dockerfile: ApiGateways/Web.Bff.Shopping/aggregator/Dockerfile
+
+  webmvc:
+    image: ${DOCKER_REGISTRY-}webmvc
+    build:
+      context: .
+      dockerfile: WebApps/WebMVC/Dockerfile
+
+  webstatus:
+    image: ${DOCKER_REGISTRY-}webstatus
+    build:
+      context: .
+      dockerfile: WebApps/WebStatus/Dockerfile
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+
+  metricbeat:
+    image: docker.elastic.co/beats/metricbeat:${STACK_VERSION}
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:${STACK_VERSION}
+  
+  logstash:
+    image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
+
+  grafana:
+    image: grafana/grafana:10.2.3
+
+  prometheus:
+    image: prom/prometheus:v2.48.1
+
+  loki:
+    image: grafana/loki:2.9.3
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.91.0
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.52
+
+volumes:
+  mongo_data:
+  postgres_data:
+  pgadmin_data:
+  rabbitmq_data:
+  elasticsearch-data:
+  grafana-data:
+  certs:
+  kibana-data:
+  metricbeat-data:
+  filebeat-data:
+  logstash-data:
